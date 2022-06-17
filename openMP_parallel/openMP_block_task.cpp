@@ -40,6 +40,16 @@ int binary_search_with_position(POSTING_LIST *list, unsigned int element, int in
     return low;
 }
 
+int serial_search_with_location(POSTING_LIST *list, unsigned int element, int index) {
+    while(index < list->len) {
+        if (list->arr[index] >= element)
+            return index;
+        else
+            index++;
+    }
+    return index;
+}
+
 void simplified_Adp(POSTING_LIST *queried_posting_list, int query_word_num, vector<unsigned int> &result_list) {
 
     //start with sorting the posting list to find the shortest one
@@ -58,7 +68,9 @@ void simplified_Adp(POSTING_LIST *queried_posting_list, int query_word_num, vect
             if (key_element > searching_list.arr[searching_list.len - 1]) {
                 goto end;
             }
-            int location = binary_search_with_position(&queried_posting_list[mth_short], key_element,
+//            int location = binary_search_with_position(&queried_posting_list[mth_short], key_element,
+//                                                       finding_pointer[mth_short]);
+            int location = serial_search_with_location(&queried_posting_list[mth_short], key_element,
                                                        finding_pointer[mth_short]);
             if (searching_list.arr[location] != key_element) {
                 flag = false;
@@ -80,7 +92,7 @@ void query_starter(vector<vector<unsigned int>> &simplified_Adp_result) {
     POSTING_LIST *queried_posting_list;
     int query_list_item;
     vector<unsigned int> simplified_Adp_result_list;
-#pragma omp parallel for num_threads(16) private(query_word_num,queried_posting_list,query_list_item,simplified_Adp_result_list) shared(query_list_container,simplified_Adp_result,QueryNum,posting_list_container) default(none) schedule(dynamic)
+#pragma omp parallel for num_threads(16) private(query_word_num,queried_posting_list,query_list_item,simplified_Adp_result_list) shared(query_list_container,simplified_Adp_result,QueryNum,posting_list_container) default(none)
     for (int i = 0; i < QueryNum; i++) {
         query_word_num = query_list_container[i].size();
         //get the posting list of ith query

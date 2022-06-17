@@ -25,7 +25,7 @@ MyTimer time_read_posting_list;
 MyTimer time_read_query_list;
 
 
-vector<int> to_int_list(char *line) {
+vector<int> to_int_list(const char *line) {
     vector<int> int_list;
     int i = 0;
     int num = 0;
@@ -77,12 +77,6 @@ int read_posting_list(struct POSTING_LIST* posting_list_container) {
     fclose(fi);
     time_read_posting_list.finish();
     time_read_posting_list.get_duration("read_posting_list");
-//    printf("posting_list_counter: %d\n", posting_list_counter);
-//    for(int i = 0; i < 10; i++){
-//        printf("posting_list_container[%d].len: %d\n", i, posting_list_container[i].len);
-//    }
-//    for(int j=0;j<21;j++)
-//        printf("posting_list_container[0].arr[%d]: %d\n", j, posting_list_container[0].arr[j]);
     return 0;
 
 }

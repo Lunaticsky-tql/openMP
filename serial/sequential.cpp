@@ -30,7 +30,6 @@ void get_sorted_index(POSTING_LIST *queried_posting_list, int query_word_num, in
 
 int binary_search_with_position(POSTING_LIST *list, unsigned int element, int index) {
     search_time++;
-    //如果找到返回该元素位置，否则返回不小于它的第一个元素的位置
     int low = index, high = list->len - 1, mid;
     while (low <= high) {
         mid = (low + high) / 2;
@@ -54,6 +53,7 @@ void sequential(POSTING_LIST *queried_posting_list, int query_word_num, vector<u
     unsigned int key_element;
     vector<int> finding_pointer(query_word_num, 0);
     key_element = queried_posting_list[sorted_index[0]].arr[finding_pointer[sorted_index[0]]];
+    //we definitely need not search the key element in the list which key element is chosen
     int gaping_mth_short = 0;
     while (true) {
         flag = true;
@@ -71,6 +71,8 @@ void sequential(POSTING_LIST *queried_posting_list, int query_word_num, vector<u
                         goto end_Seq;
                     }
                     flag = false;
+                    //update the key element and the pointer
+                    //the location indicates the first element larger than the key element
                     key_element = searching_list.arr[location];
                     finding_pointer[mth_short] = location;
                     gaping_mth_short = m;
@@ -78,9 +80,9 @@ void sequential(POSTING_LIST *queried_posting_list, int query_word_num, vector<u
                 }
                 finding_pointer[mth_short] = location;
             }
-
         }
         if (flag) {
+            //if the key element is found in all the lists, we choose the key element from the list used in last turn
             result_list.push_back(key_element);
             finding_pointer[sorted_index[gaping_mth_short]]++;
             key_element = queried_posting_list[sorted_index[gaping_mth_short]].arr[finding_pointer[sorted_index[gaping_mth_short]]];
@@ -127,14 +129,15 @@ int main() {
         printf("query_num: %d\n", QueryNum);
         vector<vector<unsigned int>> Seq_result;
         query_starter(Seq_result);
-//        for (int j = 0; j < 5; ++j) {
-//            printf("result %d: ", j);
-//            printf("%zu\n", Seq_result[j].size());
-//            for (int k = 0; k < Seq_result[j].size(); ++k) {
-//                printf("%d ", Seq_result[j][k]);
-//            }
-//            printf("\n");
-//        }
+        //test the correctness of the result
+        for (int j = 0; j < 5; ++j) {
+            printf("result %d: ", j);
+            printf("%zu\n", Seq_result[j].size());
+            for (int k = 0; k < Seq_result[j].size(); ++k) {
+                printf("%d ", Seq_result[j][k]);
+            }
+            printf("\n");
+        }
         printf("searching_time:%d\n", search_time);
         time_get_intersection.get_duration("sequential plain");
         free(posting_list_container);

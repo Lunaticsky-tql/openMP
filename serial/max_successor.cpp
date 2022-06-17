@@ -54,7 +54,7 @@ int serial_search_with_location(POSTING_LIST *list, unsigned int element, int in
 
 int serial_search_with_location_using_SIMD(POSTING_LIST *list, unsigned int element, int index) {
     //using NEON SIMD instructions, so we can compare 4 elements at a time
-    int len_list=list->len;
+    int len_list=list->len-index;
     int remainder=len_list%4;
     for (int i = index; i < list->len-remainder; i += 4) {
         //duplicate the element to compare with using NEON SIMD instructions
@@ -71,11 +71,11 @@ int serial_search_with_location_using_SIMD(POSTING_LIST *list, unsigned int elem
             }
     }
     //look for the rest of the elements
-    for (int i = len_list-remainder; i <len_list; i++) {
+    for (int i = list->len-remainder; i <list->len; i++) {
         if (list->arr[i] >= element)
             return i;
     }
-    return len_list;
+    return list->len;
 }
 void max_successor(POSTING_LIST *queried_posting_list, int query_word_num, vector<unsigned int> &result_list) {
     //get the key element from the list which just failed to find in the binary search each time
@@ -100,10 +100,10 @@ void max_successor(POSTING_LIST *queried_posting_list, int query_word_num, vecto
                 POSTING_LIST searching_list = queried_posting_list[mth_short];
 //                int location = binary_search_with_position(&queried_posting_list[mth_short], key_element,
 //                                                           finding_pointer[sorted_index[m]]);
-                int location = serial_search_with_location(&queried_posting_list[mth_short], key_element,
-                                                           finding_pointer[sorted_index[m]]);
-//                int location = serial_search_with_location_using_SIMD(&queried_posting_list[mth_short], key_element,
-//                                                                      finding_pointer[sorted_index[m]]);
+//                int location = serial_search_with_location(&queried_posting_list[mth_short], key_element,
+//                                                           finding_pointer[sorted_index[m]]);
+                int location = serial_search_with_location_using_SIMD(&queried_posting_list[mth_short], key_element,
+                                                                      finding_pointer[sorted_index[m]]);
                 if (searching_list.arr[location] != key_element) {
                     if (searching_list.len == location) {
                         //all the elements in the list are smaller than the key element, algorithm end
@@ -114,7 +114,6 @@ void max_successor(POSTING_LIST *queried_posting_list, int query_word_num, vecto
                     if (queried_posting_list[sorted_index[0]].arr[finding_pointer[sorted_index[0]] + 1] >
                         searching_list.arr[location])
                     {
-//                        finding_pointer[sorted_index[0]]++;
                         key_element = queried_posting_list[sorted_index[0]].arr[++finding_pointer[sorted_index[0]]];
                         gaping_mth_short = 0;
                     } else {
