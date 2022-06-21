@@ -45,6 +45,12 @@ vector<int> to_int_list(const char *line) {
 
 int read_posting_list(struct POSTING_LIST* posting_list_container) {
 
+#if defined  __aarch64__
+    printf("this is aarch64\n");
+#elif defined defined __x86_64__
+    printf("this is x86_64\n");
+#endif
+
     time_read_posting_list.start();
     unsigned int array_len;
     unsigned int *temp_arr;

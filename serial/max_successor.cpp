@@ -2,7 +2,9 @@
 // Created by 田佳业 on 2022/4/30.
 //
 #include <iostream>
+#if defined __aarch64__
 #include <arm_neon.h>
+#endif
 #include "../readdata.h"
 using namespace std;
 POSTING_LIST *posting_list_container = (struct POSTING_LIST *) malloc(POSTING_LIST_NUM * sizeof(struct POSTING_LIST));

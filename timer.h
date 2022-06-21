@@ -11,7 +11,6 @@ using namespace std;
 
 class MyTimer {
 private:
-    //use gettimeofday to get the current time
     struct timeval start_;
     struct timeval end;
     double timeMS;
@@ -20,6 +19,7 @@ public:
     MyTimer() {
         timeMS = 0.0;
     }
+
 
     void start() {
         gettimeofday(&start_, NULL);
